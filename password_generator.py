@@ -22,8 +22,6 @@ def password_generator(number_of_letters, number_of_numbers=1, number_of_special
         random_index = random.randrange(len(special_characters))
         password += special_characters[random_index]
     
-    # password = random.shuffle(password)
-
     password = "".join(random.sample(password,len(password)))
 
     return password
