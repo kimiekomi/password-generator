@@ -14,3 +14,4 @@ class PasswordApplication(App):
 if __name__ == "__main__":
     app = PasswordApplication(title="Password GUI", width=200, height=100)
     app.mainloop()
+
