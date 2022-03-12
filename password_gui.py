@@ -80,6 +80,21 @@ class PasswordApplication(App):
         password_tree = ttk.Treeview(self.database, height=23, width=55)
         password_tree.grid(row=0, column=0, rowspan=4, columnspan=4, padx=10, pady=10)
 
+        # Columns
+        password_tree["columns"] = ("ID", "Website Name", "Password")
+
+        # Format columns
+        password_tree.column("#0", width=0, minwidth=0, stretch=NO)
+        password_tree.column("ID", anchor=CENTER, width=30)
+        password_tree.column("Website Name", anchor=W, width=100)
+        password_tree.column("Password", anchor=W, width=200)
+
+        # Headings
+        password_tree.heading("#0", text="", anchor=W)
+        password_tree.heading("ID", text="ID", anchor=CENTER)
+        password_tree.heading("Website Name", text="Website Name", anchor=W)
+        password_tree.heading("Password", text="Password", anchor=W)
+
         # Scrollbar
         scrollbar = Scrollbar(self.database)
         scrollbar.grid(row=0, column=3, padx=(0, 25), pady=(20,0), sticky=N+S+E)
