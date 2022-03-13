@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from gui_window import App
 from password_generator import password_generator
+from database import Database
 
 debug = True
 trace = True
@@ -82,8 +83,8 @@ class PasswordApplication(App):
         self.remove_button = Button(self.database, text="Remove", command=self.remove_entry)
         self.remove_button.grid(row=1, column=1, padx=(10,0), pady=10, ipadx=10)
 
-        self.clear_button = Button(self.database, text="Clear ALL", command=self.clear_database)
-        self.clear_button.grid(row=1, column=2, padx=10, pady=10, ipadx=10)
+        self.delete_button = Button(self.database, text="Delete ALL", command=self.delete_database)
+        self.delete_button.grid(row=1, column=2, padx=10, pady=10, ipadx=10)
 
         # Password Tree
         password_tree = ttk.Treeview(self.database, height=15)
@@ -144,7 +145,9 @@ class PasswordApplication(App):
         self.password_box.delete(0, "end")
         self.password_box.insert(0, password)
 
-    
+    def fetch_entries(self):
+        pass
+
     def add_entry(self):
         pass
 
@@ -154,11 +157,11 @@ class PasswordApplication(App):
     def remove_entry(self):
         pass
 
-    def clear_database(self):
+    def delete_database(self):
         pass
 
 
 if __name__ == "__main__":
-    app = PasswordApplication(title="Password GUI", width=400, height=800)
+    app = PasswordApplication(title="Password GUI", width=461, height=761)
     app.mainloop()
 
