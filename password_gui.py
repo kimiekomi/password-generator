@@ -67,7 +67,7 @@ class PasswordApplication(App):
         self.website_box.grid(row=1, column=1, padx=10, pady=(0,10),sticky=W)
         self.website_box.insert(0, "N/A")
 
-        self.add_button = Button(self.output, text="Add to Database", command=self.add_entry)
+        self.add_button = Button(self.output, text="Add to File", command=self.add_entry)
         self.add_button.grid(row=2, column=0, columnspan=4, padx=10, pady=(0,20), ipadx=130)
 
         # Buttons
