@@ -55,13 +55,20 @@ class PasswordApplication(App):
         self.output.grid(row=5, column=0, columnspan=4, padx=20, pady=(10,15))
 
         self.password_label = Label(self.output, text="New Password")
-        self.password_label.grid(row=0, column=0, sticky=E)
+        self.password_label.grid(row=0, column=0, padx=10, sticky=E)
         
         self.password_box = Entry(self.output, width=25)
         self.password_box.grid(row=0, column=1, padx=10, pady=10, sticky=W)
 
+        self.website_label = Label(self.output, text="Website Name")
+        self.website_label.grid(row=1, column=0, padx=10, pady=(0,10), sticky=E)
+        
+        self.website_box = Entry(self.output, width=25)
+        self.website_box.grid(row=1, column=1, padx=10, pady=(0,10),sticky=W)
+        self.website_box.insert(0, "N/A")
+
         self.add_button = Button(self.output, text="Add to Database", command=self.add_entry)
-        self.add_button.grid(row=1, column=0, columnspan=4, padx=10, pady=(0,20), ipadx=130)
+        self.add_button.grid(row=2, column=0, columnspan=4, padx=10, pady=(0,20), ipadx=130)
 
         # Buttons
         self.reset_button = Button(self, text="Reset", command=self.reset_fields)
@@ -71,11 +78,11 @@ class PasswordApplication(App):
         self.submit_button.grid(row=3, column=1, padx=(100,0), pady=(0,0), ipadx=20, ipady=5)
 
         self.close_button = Button(self, text="Close Application", command=self.destroy)
-        self.close_button.grid(row=10, column=0, columnspan=4, padx=8, pady=(0,10), ipadx=143, ipady=4)
+        self.close_button.grid(row=10, column=0, columnspan=4, padx=8, pady=(5,10), ipadx=143, ipady=2)
 
         # Database
         self.database = LabelFrame(self, text="Database")
-        self.database.grid(row=6, column=0, columnspan=4, padx=20, pady=(0,20))
+        self.database.grid(row=6, column=0, columnspan=4, padx=20, pady=(0,10))
 
         self.update_button = Button(self.database, text="Update", command=self.update_entry)
         self.update_button.grid(row=1, column=0, padx=(30,0), pady=10, ipadx=10)
@@ -87,31 +94,31 @@ class PasswordApplication(App):
         self.delete_button.grid(row=1, column=2, padx=10, pady=10, ipadx=10)
 
         # Password Tree
-        password_tree = ttk.Treeview(self.database, height=15)
-        password_tree.grid(row=0, column=0, columnspan=4, padx=10, pady=(10,0))
+        self.password_tree = ttk.Treeview(self.database, height=13)
+        self.password_tree.grid(row=0, column=0, columnspan=4, padx=10, pady=(10,0))
 
         # Columns
-        password_tree["columns"] = ("ID", "Website Name", "Password")
+        self.password_tree["columns"] = ("ID", "Website Name", "Password")
 
         # Format columns
-        password_tree.column("#0", width=0, minwidth=0, stretch=NO)
-        password_tree.column("ID", anchor=CENTER, width=30)
-        password_tree.column("Website Name", anchor=W, width=155)
-        password_tree.column("Password", anchor=W, width=215)
+        self.password_tree.column("#0", width=0, minwidth=0, stretch=NO)
+        self.password_tree.column("ID", anchor=CENTER, width=30)
+        self.password_tree.column("Website Name", anchor=W, width=155)
+        self.password_tree.column("Password", anchor=W, width=215)
 
         # Headings
-        password_tree.heading("#0", text="", anchor=W)
-        password_tree.heading("ID", text="ID", anchor=CENTER)
-        password_tree.heading("Website Name", text="Website Name", anchor=W)
-        password_tree.heading("Password", text="Password", anchor=W)
+        self.password_tree.heading("#0", text="", anchor=W)
+        self.password_tree.heading("ID", text="ID", anchor=CENTER)
+        self.password_tree.heading("Website Name", text="Website Name", anchor=W)
+        self.password_tree.heading("Password", text="Password", anchor=W)
 
         # Scrollbar
-        scrollbar = Scrollbar(self.database)
-        scrollbar.grid(row=0, column=3, padx=(0, 10), pady=(35,0), sticky=N+S+E)
+        self.scrollbar = Scrollbar(self.database)
+        self.scrollbar.grid(row=0, column=3, padx=(0, 10), pady=(35,0), sticky=N+S+E)
 
         # Attach scrollbar to address_list
-        password_tree.config(yscrollcommand=scrollbar.set)
-        scrollbar.config(command=password_tree.yview)
+        self.password_tree.config(yscrollcommand=self.scrollbar.set)
+        self.scrollbar.config(command=self.password_tree.yview)
 
     def reset_fields(self):
         self.letters_box.delete(0, END)
@@ -127,6 +134,8 @@ class PasswordApplication(App):
         
 
     def submit(self):
+        if debug: print("initialized submit()")
+
         try:
             number_of_letters = int(self.letters_box.get())
             number_of_numbers = int(self.numbers_box.get())
@@ -137,6 +146,9 @@ class PasswordApplication(App):
             return
 
         results = password_generator(number_of_letters, number_of_numbers, number_of_specials)
+
+        if trace: print(f"results - {results}")
+
         self.display_results(results)
         self.error_label.grid_remove()
 
@@ -146,10 +158,18 @@ class PasswordApplication(App):
         self.password_box.insert(0, password)
 
     def fetch_entries(self):
-        pass
+        if debug: print("initialized fetch_entries()")
+
+
 
     def add_entry(self):
-        pass
+        if debug: print("initialized add_entry()")
+
+        with open("passwords.txt", "a") as file:
+            file.write(f"{self.website_box.get()}: {self.password_box.get()}\n")
+
+        self.password_tree.insert(parent="", index="end", text="", values=(self.website_box.get(), self.password_box.get()))
+
 
     def update_entry(self):
         pass
