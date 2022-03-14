@@ -52,7 +52,7 @@ class PasswordApplication(App):
         
         # Output: Labels, Entries, and Button
         self.output = LabelFrame(self, text="Output")
-        self.output.grid(row=5, column=0, columnspan=4, padx=20, pady=(10,15))
+        self.output.grid(row=5, column=0, columnspan=4, padx=20, pady=(10,15), ipadx=19)
 
         self.password_label = Label(self.output, text="New Password")
         self.password_label.grid(row=0, column=0, padx=10, sticky=E)
@@ -167,8 +167,8 @@ class PasswordApplication(App):
 
         with open("passwords.txt", "a") as file:
             file.write(f"{self.website_box.get()}: {self.password_box.get()}\n")
-
-        self.password_tree.insert(parent="", index="end", text="", values=(self.website_box.get(), self.password_box.get()))
+        
+        self.password_tree.insert(parent="", index="end", text="", values=("", self.website_box.get(), self.password_box.get()))
 
 
     def update_entry(self):
