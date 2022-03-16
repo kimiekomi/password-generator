@@ -29,6 +29,10 @@ class Database:
         self.cursor.execute("DELETE FROM passwords")
         self.connect.commit()
 
+    def reset_autoincrement(self):
+        self.cursor.execute("DELETE FROM sqlite_sequence WHERE name='passwords'")
+        self.connect.commit()
+
     def __del__(self):
         self.connect.close()
 

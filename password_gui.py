@@ -189,11 +189,43 @@ class PasswordApplication(App):
         self.fetch_entries()
 
 
+    def select_entry(self,event):
+        if debug: print("initialized select_entry()")
+
+        self.password_box.delete(0, END)
+        self.website_box.delete(0, END)
+
+        self.selected_entry = self.password_tree.item(self.password_tree.focus(), "values")
+
+        if trace: print(self.selected_entry)
+
+        if not self.selected_entry:
+            if debug: print(self.selected_entry[0])
+            return
+
+        self.password_box.insert(END, self.selected_entry[1])
+        self.website_box.insert(END, self.selected_entry[2])
+
+
     def update_entry(self):
         pass
 
     def remove_entry(self):
-        pass
+        if debug: print("initialized remove_entry()")
+
+        self.selected_entry = self.password_tree.item(self.password_tree.focus(), "values")
+
+        self.id = self.selected_entry[0]
+
+        if trace: print(f"id: '{self.id}'")
+
+        self.database.remove(self.id)
+
+        for entry in self.password_tree.selection():
+            self.password_tree.delete(entry)
+
+        self.reset_fields()
+
 
     def delete_database(self):
         if debug: print("initialized delete_database()")
@@ -202,6 +234,7 @@ class PasswordApplication(App):
 
         if response == 1:
             self.database.delete_all()
+            self.database.reset_autoincrement()
 
             for entry in self.password_tree.get_children():
                 self.password_tree.delete(entry)
