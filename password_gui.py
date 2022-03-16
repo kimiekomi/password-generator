@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 from gui_window import App
 from password_generator import password_generator
 from database import Database
