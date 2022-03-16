@@ -14,7 +14,7 @@ class Database:
         return rows
 
     def add(self, website_name, password):
-        self.cursor.execute("INSERT INTO addresses VALUES (NULL, ?, ?)", (website_name, password))
+        self.cursor.execute("INSERT INTO passwords VALUES (NULL, ?, ?)", (website_name, password))
         self.connect.commit()
 
     def remove(self, id):

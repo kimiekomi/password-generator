@@ -50,9 +50,9 @@ class PasswordApplication(App):
         self.error_label.grid(row=4, column=0, columnspan=3, padx=30, sticky=W)
         self.error_label.grid_remove()
         
-        # Output: Labels, Entries, and Button
+        # Output Frame: Labels, Entries, and Button
         self.output = LabelFrame(self, text="Output")
-        self.output.grid(row=5, column=0, columnspan=4, padx=20, pady=(10,15), ipadx=19)
+        self.output.grid(row=5, column=0, columnspan=4, padx=20, pady=(10,15))
 
         self.password_label = Label(self.output, text="New Password")
         self.password_label.grid(row=0, column=0, padx=10, sticky=E)
@@ -67,7 +67,7 @@ class PasswordApplication(App):
         self.website_box.grid(row=1, column=1, padx=10, pady=(0,10),sticky=W)
         self.website_box.insert(0, "N/A")
 
-        self.add_button = Button(self.output, text="Add to File", command=self.add_entry)
+        self.add_button = Button(self.output, text="Add to Database", command=self.add_entry)
         self.add_button.grid(row=2, column=0, columnspan=4, padx=10, pady=(0,20), ipadx=130)
 
         # Buttons
@@ -80,7 +80,7 @@ class PasswordApplication(App):
         self.close_button = Button(self, text="Close Application", command=self.destroy)
         self.close_button.grid(row=10, column=0, columnspan=4, padx=8, pady=(5,10), ipadx=143, ipady=2)
 
-        # Database
+        # Database Frame
         self.database = LabelFrame(self, text="Database")
         self.database.grid(row=6, column=0, columnspan=4, padx=20, pady=(0,10))
 
@@ -120,15 +120,22 @@ class PasswordApplication(App):
         self.password_tree.config(yscrollcommand=self.scrollbar.set)
         self.scrollbar.config(command=self.password_tree.yview)
 
+        # Database
+        self.database = Database("password_tree.db")
+        self.fetch_entries()
+
+
     def reset_fields(self):
         self.letters_box.delete(0, END)
         self.numbers_box.delete(0, END)
         self.specials_box.delete(0, END)
         self.password_box.delete(0, END)
+        self.website_box.delete(0, END)
 
         self.letters_box.insert(0, "10")
         self.numbers_box.insert(0, "1")
         self.specials_box.insert(0, "1")
+        self.website_box.insert(0, "N/A")
 
         self.error_label.grid_remove()
         
@@ -160,15 +167,25 @@ class PasswordApplication(App):
     def fetch_entries(self):
         if debug: print("initialized fetch_entries()")
 
-
+        for row in self.database.fetch():
+            if trace: print(row)
+            self.password_tree.insert(parent="", index="end", text="", values=(row[0], row[1], row[2]))
 
     def add_entry(self):
         if debug: print("initialized add_entry()")
 
-        with open("passwords.txt", "a") as file:
-            file.write(f"{self.website_box.get()}: {self.password_box.get()}\n")
+        # with open("passwords.txt", "a") as file:
+        #     file.write(f"{self.website_box.get()}: {self.password_box.get()}\n")
         
-        self.password_tree.insert(parent="", index="end", text="", values=("", self.website_box.get(), self.password_box.get()))
+        # self.password_tree.insert(parent="", index="end", text="", values=("", self.website_box.get(), self.password_box.get()))
+
+        self.database.add(self.website_box.get(), self.password_box.get())
+
+        for row in self.password_tree.get_children():
+            self.password_tree.delete(row)
+
+        self.reset_fields()
+        self.fetch_entries()
 
 
     def update_entry(self):
@@ -178,7 +195,15 @@ class PasswordApplication(App):
         pass
 
     def delete_database(self):
-        pass
+        if debug: print("initialized delete_database()")
+
+        response = messagebox.askyesno("askyesno", "Are you sure you want to delete ALL entries?")
+
+        if response == 1:
+            self.database.delete_all()
+
+            for entry in self.password_tree.get_children():
+                self.password_tree.delete(entry)
 
 
 if __name__ == "__main__":
