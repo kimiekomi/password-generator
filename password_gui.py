@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
+import json
 from gui_window import App
 from password_generator import password_generator
 from database import Database
@@ -175,10 +176,14 @@ class PasswordApplication(App):
     def add_entry(self):
         if debug: print("initialized add_entry()")
 
-        # with open("passwords.txt", "a") as file:
-        #     file.write(f"{self.website_box.get()}: {self.password_box.get()}\n")
+        json_entry = {
+            "self.website_box.get()" : "self.password_box.get()"
+        }
+
+        with open("passwords.json", "a") as file:
+            file.write(json_entry)
         
-        # self.password_tree.insert(parent="", index="end", text="", values=("", self.website_box.get(), self.password_box.get()))
+        self.password_tree.insert(parent="", index="end", text="", values=("", self.website_box.get(), self.password_box.get()))
 
         self.database.add(self.website_box.get(), self.password_box.get())
 
@@ -197,10 +202,10 @@ class PasswordApplication(App):
 
         self.selected_entry = self.password_tree.item(self.password_tree.focus(), "values")
 
-        if trace: print(self.selected_entry)
+        if trace: print(self.selected_entry[0])
 
         if not self.selected_entry:
-            if debug: print(self.selected_entry[0])
+            if trace: print(self.selected_entry[0])
             return
 
         self.password_box.insert(END, self.selected_entry[1])
