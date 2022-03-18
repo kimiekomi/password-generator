@@ -176,9 +176,11 @@ class PasswordApplication(App):
     def add_entry(self):
         if debug: print("initialized add_entry()")
 
-        json_entry = {
-            "self.website_box.get()" : "self.password_box.get()"
-        }
+        entry = {}
+
+        entry[f"{self.website_box.get()}"] = self.password_box.get()
+
+        json_entry = json.dumps(entry, indent=4, separators=(',', ': '))
 
         with open("passwords.json", "a") as file:
             file.write(json_entry)
