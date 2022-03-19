@@ -56,11 +56,15 @@ class PasswordApplication(App):
         self.output = LabelFrame(self, text="Output")
         self.output.grid(row=5, column=0, columnspan=4, padx=20, pady=(10,15))
 
+        self.password = StringVar()
+
         self.password_label = Label(self.output, text="New Password")
         self.password_label.grid(row=0, column=0, padx=10, sticky=E)
         
         self.password_box = Entry(self.output, width=25)
         self.password_box.grid(row=0, column=1, padx=10, pady=10, sticky=W)
+
+        self.website = StringVar()
 
         self.website_label = Label(self.output, text="Website Name")
         self.website_label.grid(row=1, column=0, padx=10, pady=(0,10), sticky=E)
@@ -121,6 +125,9 @@ class PasswordApplication(App):
         # Attach scrollbar to address_list
         self.password_tree.config(yscrollcommand=self.scrollbar.set)
         self.scrollbar.config(command=self.password_tree.yview)
+
+        # Bind select
+        self.password_tree.bind("<<TreeviewSelect>>", self.select_entry)
 
         # Database
         self.database = Database("password_tree.db")
@@ -210,12 +217,19 @@ class PasswordApplication(App):
             if trace: print(self.selected_entry[0])
             return
 
-        self.password_box.insert(END, self.selected_entry[1])
-        self.website_box.insert(END, self.selected_entry[2])
+        self.website_box.insert(END, self.selected_entry[1])
+        self.password_box.insert(END, self.selected_entry[2])
 
 
     def update_entry(self):
-        pass
+        if debug: print("initialized update_entry()")
+
+        self.database.update(self.selected_entry[0], self.website.get(), self.password.get())
+
+        self.password_tree.item(self.password_tree.focus(), text="", values=(self.selected_entry[0], self.website_box.get(), self.password_box.get()))
+
+        self.reset_fields()
+
 
     def remove_entry(self):
         if debug: print("initialized remove_entry()")
